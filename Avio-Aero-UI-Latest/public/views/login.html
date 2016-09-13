@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Predix Avio Aero</title>
+    <base href="/">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+
+    <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html"/>
+
+    <script type='application/javascript' src='https://dev-messages.grc-apps.svc.ice.ge.com/messages.js'></script>
+
+    <link rel="localization" href="locales/manifest.json">
+    <script src="bower_components/l20n/l20n.min.js"></script>
+
+    <!-- import page level css. -->
+    <link rel="import" href="bower_components/px-theme/px-app.html">
+    <!-- import component theme css variables. -->
+    <link rel="import" href="bower_components/px-theme/px-theme.html"/>
+
+    <script type='application/javascript' src='bower_components/px/dist/px.min.js'></script>
+
+    <!-- Just needed for IE -->
+    <script src="bower_components/es6-promise/dist/es6-promise.min.js"></script>
+
+    <link rel="import" href="bower_components/px-card/px-dashboard.html"/>
+
+    <link rel="import" href="bower_components/px-card/px-card.html"/>
+
+    <link rel="import" href="bower_components/px-context-browser/px-context-browser.html"/>
+    <link rel="import" href="bower_components/px-sample-cards/time-series-card.html"/>
+    <link rel="import" href="bower_components/px-sample-cards/widget-to-widget-card.html"/>
+    
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+background-color:;
+}
+</style>
+</head>
+
+<body class="app" data-ng-controller="MainCtrl" style="padding-left:100px">
+  <header role="banner" class="flex flex--middle">
+    <div class="viewport">
+      <h1>
+        <svg class="u-mr--" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="-280 372 50 50"><path style="fill:#ffffff;" d="M-255 422c-13.8 0-25-11.1-25-25 0-13.8 11.2-25 25-25s25 11.2 25 25C-230 410.9-241.2 422-255 422zM-255 373.2c-13.1 0-23.8 10.7-23.8 23.8s10.7 23.8 23.8 23.8 23.8-10.7 23.8-23.8S-241.8 373.2-255 373.2zM-233.8 404.1c0 0 0 0-0.1 0s-0.1 0-0.1-0.1c0 0 0.8-2.5 0.8-5.3 0-3-1.3-4.9-2.8-4.9 -1 0-1.7 0.7-1.7 1.7 0 1.9 2.3 2 2.3 6.1 0 1.7-0.4 3.3-0.9 5 -2.6 8.7-10.7 12.7-18.7 12.7 -3.7 0-6.3-0.8-7.1-1.1v-0.1l0.1-0.1c0.3 0.1 2.5 0.8 5.3 0.8 3 0 4.8-1.3 4.8-2.8 0-1-0.8-1.7-1.7-1.7 -1.9 0-2 2.4-6 2.4 -1.7 0-3.3-0.4-5.1-0.9 -8.6-2.6-12.7-10.7-12.7-18.8 0-3.9 1.1-7 1.1-7.1h0.1c0.1 0 0.1 0.1 0.1 0.1 -0.1 0.3-0.8 2.5-0.8 5.3 0 3 1.3 4.8 2.8 4.8 0.9 0 1.7-0.7 1.7-1.7 0-1.9-2.3-2.1-2.3-6.1 0-1.7 0.4-3.3 0.9-5.1 2.6-8.6 10.7-12.6 18.7-12.7 3.7 0 6.9 1.1 7.1 1.2v0.1c0 0.1-0.1 0.1-0.1 0.1s-2.1-0.9-5.3-0.9c-3 0-4.8 1.3-4.8 2.8 0 0.9 0.7 1.7 1.7 1.7 1.9 0 2-2.3 6-2.3 1.7 0 3.3 0.4 5.1 0.9 8.7 2.6 12.6 10.8 12.7 18.7C-232.6 401-233.8 404.1-233.8 404.1zM-245.7 398.2c-2.4 0-4.2 1.7-4.2 3.8 0 1.7 1 3.1 2.4 3.1 0.5 0 1-0.3 1-0.9 0-0.9-1.2-1.1-1.1-2.5 0-0.9 0.9-1.5 1.7-1.5 1.7 0 2.4 1.6 2.4 3.3 -0.1 2.6-2 4.3-4.2 4.3 -2.9 0-4.8-2.8-4.8-5.8 0-4.4 2.9-6.2 4.4-6.6 0 0 4 0.7 3.8-1 0-0.8-1.2-1.1-2-1.1 -0.9 0-1.8 0.3-1.8 0.3 -0.5-0.2-0.8-0.7-1-1.3 2.8-2.1 4.8-4.2 4.8-6.6 0-1.3-0.8-2.4-2.4-2.4 -2.8 0-5 3.6-5 6.8 0 0.5 0 1.1 0.1 1.6 -1.8 1.3-3.1 2.1-5.6 3.6 0-0.3 0.1-1.1 0.3-2.1 0.8-0.9 2-2.2 2-3.3 0-0.5-0.3-0.9-0.8-0.9 -1.4 0-2.4 2.1-2.7 3.5 -0.6 0.8-1.9 1.7-2.9 1.7 -0.8 0-1.1-0.8-1.2-1 2.6-0.9 5.9-4.5 5.9-7.8 0-0.7-0.3-2.2-2.4-2.2 -3.1 0-5.7 4.7-5.7 8.2 -1.1 0-1.5-1.2-1.5-2.1s0.4-1.8 0.4-2.1c0-0.3-0.1-0.6-0.5-0.6 -1 0-1.7 1.4-1.7 3 0.1 2.2 1.5 3.6 3.5 3.7 0.3 1.3 1.5 2.5 2.9 2.5 0.9 0 2-0.3 2.8-1 -0.1 0.5-0.1 0.9-0.2 1.3 -3 1.6-5.3 2.7-7.3 4.5 -1.6 1.5-2.5 3.4-2.5 4.9 0 2.1 1.3 4 4 4 3.2 0 5.6-2.5 6.8-6.1 0.6-1.7 0.8-4.1 0.9-6.3 3.2-1.8 4.7-2.8 6.4-4 0.2 0.4 0.4 0.6 0.7 0.8 -1.5 0.8-4.9 2.9-4.9 8 0 3.6 2.4 7.6 7.2 7.6 3.9 0 6.7-3.3 6.7-6.4C-241 400.8-242.6 398.2-245.7 398.2zM-264.7 407.9c-1 0-1.7-0.6-1.7-1.7 0-3 4.1-5.8 7.2-7.3C-259.8 403-261.2 407.7-264.7 407.9zM-262.4 391.5c0-2.3 2.3-6.6 3.6-6.2C-257.2 385.9-260.2 390.3-262.4 391.5zM-249.4 390.5c0-2.8 1.9-5.6 3-5.1C-245.2 386-247.3 388.7-249.4 390.5z"></path></svg>
+       PREDIX AVIO AERO
+      </h1>
+
+    <div class="media-thumb">
+      <img src="images/Capture3.jpg" style="margin-top:150px;width:971px;height:250px">
+      <a data-toggle="modal" href="https://youtu.be/UR5riZaKy1E" class="" onclick=""></a>
+    </div>
+
+    </div>
+  </header>
+<div class="flex flex--center" style="padding-bottom:20px;" >
+  <div><img src="images/Avioaero.png" ></img></div>
+    <div class="island" style="padding-bottom:0px;background: url(images/black.jpg);margin-left:724px;margin-top:-64px;">
+      <div class="box box--huge" >
+            <div class="u-lap-and-up-m++ u-lap-and-up-p++">
+              <div class="flex flex--left u-mv+" style="padding-bottom:0px; ">
+                <h1 style="padding-left:30px;padding-bottom:0px;color:#ffffff;"><strong>User Login</strong></h1>
+                <h5><small style="color:#059A9F;"><sub><sub></small></h5>
+              
+              </div>
+              <div class="alert alert-error" data-ng-show="loginerror">{{loginerror}}</div>
+                <form method="post" class="u-mh++ u-mb++" data-ng-submit="login()">
+                
+  <div>
+        <input type="text" id="username" class="form-control" placeholder="Username" required autofocus ng-model="user.username"></div><br/>
+       <div> 
+        <input type="password" id="password" class="form-control" placeholder="Password" required ng-model="user.password"></div>
+    <br>
+
+
+                 <!--  <input class="text-input u-mb+" name="username" type="text" placeholder="Username" autocomplete="true" autofocus="autofocus" data-ng-model="user.username" />
+                  <input class="text-input u-mb+" name="password" type="password" placeholder="Password" autocomplete="false" data-ng-model="user.password" /> -->
+               <div>  <button class="btn btn-lg btn-primary btn-block" type="submit" style="background: #08a5e1;border-color: #08a5e1;margin-left:100px;">Log in</button> </div></form>
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div style="background-color:#ffffff">
+<p style="font-family:GE Inspira;font-size:110%;">Avio Aero is a GE Aviation business which designs, manufactures and maintains components and systems for civil and military aviation. Today, the company provides its clients with innovative technological solutions to respond quickly to constant changes demanded by the market: Additive manufacturing, rapid prototyping, but also cells dedicated to streamlined manufacturing of transmissions, turbines and combustion chambers.
+Avio Aero has its head office in Italy and major plants in Rivalta di Torino, Pomigliano d’Arco (Naples) and Brindisi. Avio Aero has production sites also in Poland, with more than 4600 employees worldwide (around 4000 of whom are based in Italy).
+Continuous and ongoing investment in research and development and an established network of relationships with leading universities and international research centres have allowed Avio Aero to develop technological and manufacturing excellence which is recognised across the globe: an achievement borne out by a range of collaborative partnerships with key operators in the global aviation industry.
+The challenge for Avio Aero is to access technologies and develop new architectures to reduce energy consumption, make aircraft engines lighter and providing the best performances possible.</p></div>
+<footer class="flex flex--middle" role="contentinfo">
+    <div id="address-f742abffba08fc849b6e80dec769a74c-7a5e225bc3a652b90487c5236cd13abc">
+      
+  
+      
+    
+                                
+                            
+      
+
+  
+  
+      
+  
+<div class="gallery content-container w-50 h-100  animation-gallery">
+      <a data-toggle="modal" href="#content134" class="layer-play-media" onclick="hideSocial('gallery', '134','');">
+      <div class="content-title">
+      <div class="content-title-text">
+        <h2></h2>
+        <h3>
+<p>Over 100 years of history and innovations</p></h3>
+      </div>
+    </div> 
+  </a>
+  
+  <div class="content-image">
+    <img src="/var/ezdemo_site/storage/images/home-elements/history/912-17-eng-US/History.png">
+    <a data-toggle="modal" href="#content134" class="layer-play-media" onclick="hideSocial('gallery', '134','');"></a>
+  </div>
+</div>
+
+  <div class="modal " id="content134" data-keyboard="true">
+    <div class="container-modal">
+        
+    <div class="modal-social-share">
+      <a onclick="return shareThisContent('facebook','/Media-Center/(media)/673/(name)/Our-history');">
+             <img src="/extension/ezdemo/design/avioaero/images/icon_facebook.png" alt="icon facebook">
+        </a>
+          <a onclick="return shareThisContent('twitter','/Media-Center/(media)/673/(name)/Our-history');">
+            <img src="/extension/ezdemo/design/avioaero/images/icon_twitter.png" alt="icon twitter">
+          </a>
+          <a onclick="return shareThisContent('googleplus','/Media-Center/(media)/673/(name)/Our-history');">
+            <img src="/extension/ezdemo/design/avioaero/images/icon_google.png" alt="icon google">
+          </a>
+          <a onclick="return shareThisContent('linkedin','/Media-Center/(media)/673/(name)/Our-history');">
+            <img src="/extension/ezdemo/design/avioaero/images/icon_linkedin.png" alt="icon linkedin">
+          </a>
+          <!--a onclick="return shareThisContent('pinterest','/Media-Center/(media)/673/(name)/Our-history');">
+            <img src="/extension/ezdemo/design/avioaero/images/icon_share_pinterest.png" alt="icon pinterest">
+          </a-->
+    </div>
+    
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"></button>
+        </div>
+          <div class="modal-body">
+            
+                                      <ul class="bxslider" id="bxslider134">
+                              <li>
+                <a target="_blank" href="/content/download/734/5688" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/j79/5688-1-eng-US/J79.jpg" />
+                    </li>
+                              <li>
+                <a target="_blank" href="/content/download/733/5685" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/a50/5685-1-eng-US/A50.jpg" />
+                    </li>
+                              <li>
+                <a target="_blank" href="/content/download/735/5691" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/g18/5691-1-eng-US/G18.jpg" />
+                    </li>
+                              <li>
+                <a target="_blank" href="/content/download/737/5697" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/control-bench/5697-1-eng-US/Control-bench.jpg" />
+                    </li>
+                              <li>
+                <a target="_blank" href="/content/download/738/5700" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/machining/5700-1-eng-US/Machining.jpg" />
+                    </li>
+                              <li>
+                <a target="_blank" href="/content/download/739/5703" class="media-download">Download</a>
+                        <img class="single-image-gallery" src="/var/ezdemo_site/storage/images/media-center/images/our-history/assemblying/5703-1-eng-US/Assemblying.jpg" />
+                    </li>
+                            </ul>
+            <h2>Our history</h2>
+                        </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+<script>
+
+  var slider134;
+  $('document').ready(function(){
+    slider134 = $('#bxslider134').bxSlider({
+      mode: 'horizontal',
+      captions: true,
+      controls: true,
+      adaptiveHeight: true,
+    });
+  });
+
+  $('#content134').on('shown.bs.modal', function () {
+    slider134.reloadSlider();
+  });
+
+  $('#content134').on('hidden.bs.modal', function () {
+    $('.social-share-bar').show();
+    if (!navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+      $('#iframeVideo134')[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
+    }else{
+      $('#iframeVideo134').attr("src",'');
+    }
+  });
+  
+  
+</script>
+
+
+
+
+
+
+<script>
+  jQuery(document).ready(function() {
+    var divs = $('#node_label > div.h-50');
+    wrapDiv(divs);
+  });
+
+</script>
+
+    </div>
+    <div class="block-separator"></div>                                <div id="address-f742abffba08fc849b6e80dec769a74c-6e3924d38799abfa8b39152aa2b93dea">
+    <div class="h-100 w-25 content-container social-container">
+  <div class="fb-like-box" data-href="https://www.facebook.com/AvioAero/timeline?ref=page_internal" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="true">
+    
+  </div>
+  
+  <div id="fb-root"></div>
+  
+  <script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/it_IT/sdk.js#xfbml=1&appId=106901637633&version=v2.0";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
+  
+
+  <div class="break"></div>
+</div>
+
+    </div>
+    <div class="block-separator"></div>                                <div id="address-f742abffba08fc849b6e80dec769a74c-a20a1cd9fde89ea704ba1be954df5f36">
+    <div class="h-100 w-25 content-container social-container">
+  <a class="twitter-timeline"  href="https://twitter.com/AvioAero" data-widget-id="512902677722697729">Tweets di @AvioAero</a>
+  
+  
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  
+</div>
+    </div>
+    <div class="block-separator"></div>                                </section>
+    </div>
+</div>
+
+    </div>
+
+    </div>
+</div>
+
+    <!-- Main area content: END -->
+</div>
+
+            <!-- Main area: END -->
+            
+            <!-- Extra area: START -->
+                        <!-- Extra area: END -->
+        </div>
+    </div>
+    <!-- Columns area: END -->
+
+    <!-- Footer area: START -->
+    <!-- Footer area: START --><footer>
+    <div class="container footer-top">
+        <div class="row">
+            <div class="span6 span-left">
+                
+  <div class="footer-col col-footer-menu">  
+            
+  
+          <h3>Who</h3>
+  
+        
+    <ul>
+          <li>
+        <a href="/Who/Avio-Aero"> Avio Aero </a>
+      </li>
+          <li>
+        <a href="/Who/Leadership"> Leadership </a>
+      </li>
+          <li>
+        <a href="/Who/Careers"> Careers </a>
+      </li>
+          <li>
+        <a href="/Who/Code-of-conduct"> Code of conduct </a>
+      </li>
+          <li>
+        <a href="/Who/EHS-Policy"> EHS Policy </a>
+      </li>
+        </ul>
+ 
+          
+            
+  
+          <h3>What</h3>
+  
+        
+    <ul>
+          <li>
+        <a href="/What/Mechanical-Transmissions"> Mechanical Transmissions </a>
+      </li>
+          <li>
+        <a href="/What/Turbomachinery"> Turbomachinery </a>
+      </li>
+          <li>
+        <a href="/What/Combustors"> Combustors </a>
+      </li>
+          <li>
+        <a href="/What/Frames-and-Cases"> Frames and Cases </a>
+      </li>
+          <li>
+        <a href="/What/Additive-Manufacturing"> Additive Manufacturing </a>
+      </li>
+          <li>
+        <a href="/What/MRO-CRO"> MRO &amp; CRO </a>
+      </li>
+          <li>
+        <a href="/What/Sand-Casting"> Sand Casting </a>
+      </li>
+        </ul>
+ 
+          
+            
+  
+          
+            
+  
+          
+            
+  
+          
+            
+  
+          
+      </div>
+    
+    <div class="footer-col col-footer-menu">  
+                    
+          
+                  
+                    
+          
+                  
+                    
+          
+                  <h3>How</h3>
+      
+                
+        <ul>
+                  <li>
+                          <a href="/How/Research-Development"> Research &amp; Development </a>
+                      </li>
+                  <li>
+                          <a href="http://poloniaero.avioaero.com" target="_blank"> Polonia Aero </a>
+                      </li>
+                  <li>
+                          <a href="http://www.innolot.avioaero.com" target="_blank"> Innolot Copernik </a>
+                      </li>
+                  <li>
+                          <a href="/How/Certifications"> Certifications </a>
+                      </li>
+                </ul>
+     
+                  
+                    
+          
+                  
+                    
+          
+                  <h3>Where</h3>
+      
+                
+        <ul>
+                  <li>
+                          <a href="/Where/Contacts-and-Plants"> Contacts and Plants </a>
+                      </li>
+                </ul>
+     
+                  
+                    
+          
+                  
+            <h3><a href="/Press-releases">Press releases</a></h3>
+      <h3><a href="/Media-Center">Media Center</a></h3> 
+    </div>
+  <!--  <h3><a href=""/News"">News</a></h3>
+    <h3><a href=""/Media-Center"">Media Center</a></h3> -->
+
+
+
+<div class="footer-col col-footer-contacts">
+  <h3>Contacts</h3>
+  <!-- <ul>
+    <li>Tel: +39 011 0082111</li>
+    <li>fax: + 39 011 0084063</li>
+    <li><a href="mailto:info@avioaero.com">mail: info@avioaero.com</a></li>
+  </ul> -->
+  
+  <h4>Headquarters</h4>
+
+  <p>Via I Maggio, 99<br />
+  10040 Rivalta di Torino (TO) - Italia<br />
+  Tel. +39 011 0082111<br />
+  </p>
+  
+  <h4>Press office contacts</h4>
+  
+  <p>Tel. +39 011 0084412<br />
+  Fax +39 011 0084163<br />
+  </p>
+  
+</div>                <div class="break"></div>
+            </div>
+            
+            <div class="span6 span-right">
+                
+    <article class="class-feedback-form ">
+
+        <div class="attribute-header">
+            <h3></h3>
+            <h3>Need information?</h3>
+        </div>  
+
+        <form method="post" id="footer_contact" >
+          <div class="row">
+              <div class="span6">
+                  <div class="attribute-first-name">
+                      <input class="box" type="text" size="70" name="ContentObjectAttribute_ezstring_data_text_639" value="" placeholder="Name & Last name" />                  </div>
+              
+                  <div class="attribute-email">
+                      <input class="box" type="text" size="20" name="ContentObjectAttribute_data_text_640" value="" placeholder="Email" />                  </div>
+                  <div class="break"></div>
+              </div>
+          </div>
+  
+          <div class="row">
+              <div class="span6">
+                  <div class="attribute-subject">
+                      <input class="box" type="text" size="70" name="ContentObjectAttribute_ezstring_data_text_641" value="" placeholder="Subject" />                 </div>
+              </div>
+          </div>
+  
+          <div class="row">
+              <div class="span6">
+                  <div class="attribute-country">
+                      <label></label>
+                                        </div>
+              </div>
+          </div>
+  
+          <div class="row">
+              <div class="span6">
+                  <div class="attribute-message">
+                      <textarea class="box" name="ContentObjectAttribute_data_text_642" cols="70" rows="10" placeholder="Message"></textarea>                 </div>
+              </div>
+          </div>
+             
+          <div class="content-action">
+              <input type="submit" class="btn btn-warning" name="ActionCollectInformation" value="Send" onclick="return newContact();" />
+              <input type="hidden" name="ContentNodeID" value="92" />
+              <input type="hidden" name="ContentObjectID" value="109" />
+              <input type="hidden" name="ViewMode" value="full" />
+          </div>
+        </form>
+        
+       <div class="message-form-success">
+  <p>Your message has been sent.
+  <br />We will respond as soon as possible.
+  <br />Thank you</p>
+</div>
+
+<div class="message-form-loading">
+  <img src="/extension/ezdemo/design/avioaero/images/ajax-loader.gif" alt="icon loading">
+</div>        
+        
+        <!-- newsletter provv start -->
+        <div class="newsletter-form">
+          <h3>Newsletter</h3>
+          <input class="box" type="text" size="70" name="emailFooterSubscription" placeholder="Enter your e-mail address">
+          <input type="submit" class="btn btn-warning pull-right subscribe" name="ActionCollectInformation" value="Subscribe" onclick="return newNewsletterSubscription();" />
+          <div class="break"></div>
+        </div>
+        <!-- newsletter provv end -->
+        
+    </article>
+    
+        
+          
+      <script>
+            function newContact(){
+              var noerror=0;
+              if ($('input[name="ContentObjectAttribute_ezstring_data_text_639"]').val() == ''){
+                $('input[name="ContentObjectAttribute_ezstring_data_text_639"]').addClass('error');
+                return false;
+              }else{
+                $('input[name="ContentObjectAttribute_ezstring_data_text_639"]').removeClass('error');
+              }
+              if ($('input[name="ContentObjectAttribute_data_text_640"]').val() == ''){
+                $('input[name="ContentObjectAttribute_data_text_640"]').addClass('error');
+                return false;
+              }else{
+                if(validateEmail($('input[name="ContentObjectAttribute_data_text_640"]').val()) != 0){
+                  $('input[name="ContentObjectAttribute_data_text_640"]').addClass('error');
+                  return false;
+                }else{
+                  $('input[name="ContentObjectAttribute_data_text_640"]').removeClass('error');
+                }
+                $('input[name="ContentObjectAttribute_data_text_640"]').removeClass('error');
+              }
+              if ($('input[name="ContentObjectAttribute_ezstring_data_text_641"]').val() == ''){
+                $('input[name="ContentObjectAttribute_ezstring_data_text_641"]').addClass('error');
+                return false;
+              }else{
+                $('input[name="ContentObjectAttribute_ezstring_data_text_641"]').removeClass('error');
+              }
+              if ($('textarea[name="ContentObjectAttribute_data_text_642"]').val() == ''){
+                $('textarea[name="ContentObjectAttribute_data_text_642"]').addClass('error');
+                return false;
+              }else{
+                $('textarea[name="ContentObjectAttribute_data_text_642"]').removeClass('error');
+              }
+  
+            var _params = 
+              {
+                  ActionCollectInformation: 'Send',
+                    ContentNodeID: 92,
+                    ContentObjectID: 109,
+                    ViewMode: 'full',
+                    ContentObjectAttribute_ezstring_data_text_639: $('input[name="ContentObjectAttribute_ezstring_data_text_639"]').val(),
+                    ContentObjectAttribute_data_text_640: $('input[name="ContentObjectAttribute_data_text_640"]').val(),
+                    ContentObjectAttribute_ezstring_data_text_641: $('input[name="ContentObjectAttribute_ezstring_data_text_641"]').val(),
+                    ContentObjectAttribute_data_text_642: $('textarea[name="ContentObjectAttribute_data_text_642"]').val()
+            };
+          loadAjaxContentCollectedInfo("/layout/set/ajax/content/action",'footer_contact',_params);
+            return false;
+        }
+      </script>
+      
+                  <div class="break"></div>
+            </div>
+            <div class="break"></div>
+        </div>
+    </div>
+    
+    <div class="claim-wrapper">
+        <div class="container">
+            <div class="nav-collapse">
+                <div class="text-left">© GE AVIO S.r.l. - P. IVA 10898340012</div>
+                <div class="text-right">
+                  <ul>
+                                                                                    <li><a href="/Legal">Legal</a></li>
+                                                                <li><a href="/Privacy">Privacy</a></li>
+                                                                <li><a href="/Supplier-Collaboration">Supplier Collaboration</a></li>
+                                                                <li><a href="/Product-Support">Product Support</a></li>
+                                                                <li><a href="/Cookie-Policy">Cookie Policy</a></li>
+                                      </ul>
+                </div>
+                <div class="break"></div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer area: END -->
+    <!-- Footer area: END -->
+
+</div>
+<!-- Complete page area: END -->
+
+<!-- Footer script area: START -->
+<!-- Footer script area: END -->
+
+
+
+
+
+<!-- social bar -->
+<div class="social-share-bar">
+  <div class="social-box">
+    <a onclick="return shareThisContent('facebook','/');" class="social-link social-facebook"></a>
+    <a onclick="return shareThisContent('twitter','/');" class="social-link social-twitter"></a>
+    <a onclick="return shareThisContent('googleplus','/');" class="social-link social-google"></a>
+    <a onclick="return shareThisContent('linkedin','/');" class="social-link social-linkedin"></a>
+    <a onclick="return shareThisContent('pinterest','/');" class="social-link social-pinterest"></a>
+  </div>
+</div>
+<!-- social bar -->
+
+  <div class="content-title">
+  <h3>
+<p>CONTACTS</p><br/> <p>Headquarters</p><br/><p>Via I Maggio,99</p><br/><p>10040 Rivalta di Torino</p><br/><p>(TO) - Italia</p><br/><p>Tel. +39 011 0082111</p></h3></div>
+    <div class="viewport" style="background: url(images/Capture4.JPG);">
+     
+    </div>
+  </footer>
+</body>
+<script>
+// IE11 workaround: We can't rely on IE's load order for scripts that are loaded outside of require.js (might
+//  be an issue with the web components polyfill), so we wait for the HTMLImportsLoaded event to ensure our
+//  web components' scripts have loaded.
+window.addEventListener('HTMLImportsLoaded', function(e) {
+    var elScript = document.createElement('script');
+    elScript.setAttribute('src', 'bower_components/requirejs/require.js');
+    elScript.setAttribute('data-main', 'scripts/bootstrapper.js');
+    document.getElementsByTagName('body')[0].appendChild(elScript);
+});
+</script>
+
+</html>
